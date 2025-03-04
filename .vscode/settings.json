@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        ".fantomasignore": "ignore",
+        "*.cpp": "cpp",
+        "iostream": "cpp",
+        "*.tcc": "cpp",
+        "istream": "cpp"
+    }
+}

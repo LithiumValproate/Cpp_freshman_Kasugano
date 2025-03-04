@@ -1,0 +1,30 @@
+---
+Checks:          '-*,modernize-*,clang-analyzer-*,bugprone-*,performance-*,readability-*,portability-*' 
+WarningsAsErrors: ''
+AnalyzeTemporaryDtors: false
+HeaderFilterRegex: ''
+FormatStyle:     none
+User:            user
+CheckOptions:
+  readability-identifier-naming:
+    ClassCase:             CamelCase
+    ClassMemberCase:       lower_case
+    ConstCase:             UPPER_CASE
+    ConstMemberCase:       lower_case
+    EnumCase:              CamelCase
+    EnumConstantCase:      UPPER_CASE
+    FunctionCase:          camelBack
+    GlobalCase:            lower_case
+    GlobalConstCase:       UPPER_CASE
+    LocalCase:             lower_case
+    MacroCase:             UPPER_CASE
+    MemberCase:            lower_case
+    MethodCase:            camelBack
+    NamespaceCase:         lower_case
+    ParameterCase:         lower_case
+    StaticCase:            lower_case
+    StaticConstCase:       UPPER_CASE
+    StructCase:            CamelCase
+    TemplateParameterCase: CamelCase
+    TypeAliasCase:         CamelCase
+    UnionCase:             CamelCase
