@@ -24,22 +24,22 @@ Employee* create() {
 
 void select(Employee*& head);
 
-void insert(Employee*& head, Employee* new_node) {
+void insert(Employee*& head, Employee* newNode) {
     if (head == nullptr) {
-        head = new_node;
+        head = newNode;
         return;
     }
     Employee* temp = head;
     while (temp->next != nullptr) {
         temp = temp->next;
     }
-    temp->next = new_node;
-    new_node->next = nullptr;
+    temp->next = newNode;
+    newNode->next = nullptr;
 }
 
-void del(Employee*& head, us emp_id) {
+void del(Employee*& head, us empId) {
     Employee* prev = head;
-    while (prev->next->id != emp_id)
+    while (prev->next->id != empId)
         prev = prev->next;
     if (prev->next != nullptr) {
         Employee* temp = prev->next;
@@ -50,13 +50,13 @@ void del(Employee*& head, us emp_id) {
         cout << "无效的ID。";
 }
 
-void update(Employee*& head, us emp_id, us data_id) {
+void update(Employee*& head, us empId, us dataId) {
     Employee* temp = head;
-    while (temp->id != emp_id)
+    while (temp->id != empId)
         temp = temp->next;
     us year, month, day;
     string name, sex, ethnicity, position;
-    switch (data_id) {
+    switch (dataId) {
         case 1: {
             cin >> name;
             temp->name = name;
@@ -93,14 +93,14 @@ void update(Employee*& head, us emp_id, us data_id) {
     }
 }
 
-void search(Employee* head, us emp_id) {
+void search(Employee* head, us empId) {
     Employee* temp = head;
-    while (temp->id != emp_id) {
+    while (temp->id != empId) {
         temp = temp->next;
         if (temp->next == nullptr)
             break;
     }
-    if (temp->id == emp_id) {
+    if (temp->id == empId) {
         cout << "姓名：" << temp->name << endl;
         cout << "性别：" << temp->sex << endl;
         cout << "民族：" << temp->ethnicity << endl;
@@ -159,8 +159,8 @@ void select(Employee*& head) {
                 string name, sex, ethnicity, position;
                 cout << "请输入员工ID，姓名，性别，民族，入职年月日，职位：" << endl;
                 cin >> id >> name >> sex >> ethnicity >> year >> month >> day >> position;
-                Employee* new_employee = new Employee{id, name, sex, ethnicity, {year, month, day}, position};
-                insert(head, new_employee);
+                Employee* newEmployee = new Employee{id, name, sex, ethnicity, {year, month, day}, position};
+                insert(head, newEmployee);
                 break;
             }
             case 2: {
