@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-typedef unsigned short us;
+using us =  unsigned short;
 using namespace std;
 struct Employee {
     us id;
