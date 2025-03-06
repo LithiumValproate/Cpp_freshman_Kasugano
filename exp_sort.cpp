@@ -5,10 +5,12 @@
 #include <string>
 #include <vector>
 using namespace std;
-vector<int> counting_sort(vector<int>);
+
+vector<int> counting_sort(const vector<int>&);
+
 int main() {
     cout << "Please enter numbers to sort:" << endl 
-         << "Please ends in any charcter not belongs to numbers" << endl;
+         << "Please ends in any character not belongs to numbers" << endl;
     int tmpIn;
     vector<int> vecIn;
     while(cin >> tmpIn)
@@ -16,9 +18,9 @@ int main() {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     int s;
-    vector<int> ans(vecIn.size());
+    vector<int> ans;
     cout << "Please switch which sort you want to use:" << endl
-         <<"1. Counting Sort." << endl;
+         << "1. Counting Sort." << endl;
     cin >> s;
     switch(s) {
         case 1:
@@ -28,20 +30,23 @@ int main() {
             break;
         default:
             break;
-    
     }
+    return 0;
 }
-vector<int> counting_sort(vector<int>& vec) {
+
+vector<int> counting_sort(const vector<int>& vec) {
+    if (vec.empty())
+        return {};
     int minVal = *min_element(vec.begin(), vec.end());
-    int maxVal = *max_element(vec.begin(), vec.end());
+    int maxVal = *max_element(vec.begin(), end());
     int range = maxVal - minVal + 1;
-    int count[range] = {0};
-    for (int i = 0; i < vec.size(); i++)
-        count[vec[i] - minVal]++;
-    vector<int> output(vec.size());
-    for (int i = range - 1; i >= 0; i--)
+    vector<int> count(range, 0);
+    for (int x : vec)
+        count[x - minVal]++;
+    vector<int> output;
+    output.reserve(vec.size());
+    for (int i = 0; i < range; i++)
         for (int j = 0; j < count[i]; j++)
             output.push_back(i + minVal);
-    reverse(output.begin(), output.end());
     return output;
 }
