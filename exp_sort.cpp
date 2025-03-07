@@ -27,10 +27,12 @@ int main() {
             ans = counting_sort(vecIn);
             for (int i = 0; i < ans.size(); i++)
                 cout << ans[i] << " ";
+            cout << endl;
             break;
         default:
             break;
     }
+    system("pause");
     return 0;
 }
 
@@ -38,7 +40,7 @@ vector<int> counting_sort(const vector<int>& vec) {
     if (vec.empty())
         return {};
     int minVal = *min_element(vec.begin(), vec.end());
-    int maxVal = *max_element(vec.begin(), end());
+    int maxVal = *max_element(vec.begin(), vec.end());
     int range = maxVal - minVal + 1;
     vector<int> count(range, 0);
     for (int x : vec)
