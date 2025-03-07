@@ -9,11 +9,11 @@ using namespace std;
 vector<int> counting_sort(const vector<int>&);
 
 int main() {
-    cout << "Please enter numbers to sort:" << endl 
+    cout << "Please enter numbers to sort:" << endl
          << "Please ends in any character not belongs to numbers" << endl;
     int tmpIn;
     vector<int> vecIn;
-    while(cin >> tmpIn)
+    while (cin >> tmpIn)
         vecIn.push_back(tmpIn);
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -22,15 +22,14 @@ int main() {
     cout << "Please switch which sort you want to use:" << endl
          << "1. Counting Sort." << endl;
     cin >> s;
-    switch(s) {
-        case 1:
-            ans = counting_sort(vecIn);
-            for (int i = 0; i < ans.size(); i++)
-                cout << ans[i] << " ";
-            cout << endl;
-            break;
-        default:
-            break;
+    switch (s) {
+    case 1:
+        ans = counting_sort(vecIn);
+    default:
+        for (int i = 0; i < ans.size(); i++)
+            cout << ans[i] << " ";
+        cout << endl;
+        break;
     }
     system("pause");
     return 0;
