@@ -17,10 +17,10 @@ int main() {
         vecIn.push_back(tmpIn);
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    int s;
-    vector<int> ans;
     cout << "Please switch which sort you want to use:" << endl
          << "1. Counting Sort." << endl;
+    int s;
+    vector<int> ans;
     cin >> s;
     switch (s) {
     case 1:
