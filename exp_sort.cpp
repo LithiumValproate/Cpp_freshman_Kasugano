@@ -73,8 +73,8 @@ int main() {
         ans = bubble_sort(vecIn);
         break;
     default:
-        cout << "Invalid option. Using Counting Sort by default.\n";
-        ans = counting_sort(vecIn);
+        cout << "Invalid option. Using Bubble Sort by default.\n";
+        ans = bubble_sort(vecIn);
         break;
     }
     for (int i = 0; i < ans.size(); i++)
