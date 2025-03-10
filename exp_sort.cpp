@@ -38,11 +38,22 @@ vector<int> bubble_sort(const vector<int>& vec) {
     vector<int> output = vec;
     for (int i = 0; i < output.size() - 1; i++)
         for (int j = 0; j < output.size() - i - 1; j++)
-            if (output[j] > output[j + 1]) {
-                int tmp = output[j];
-                output[j] = output[j + 1];
-                output[j + 1] = tmp;
-            }
+            if (output[j] > output[j + 1])
+                swap(output[j], output[j + 1]);
+    return output;
+}
+
+vector<int> insetion_sort(const vector<int>& vec) {
+    vector<int> output = vec;
+    for (int i = 1; i < output.size(); i++) {
+        int key = output[i];
+        int j = i - 1;
+        while (j >= 0 && output[j] > key) {
+            output[j + 1] = output[j];
+            j--;
+        }
+        output[j + 1] = key;
+    }
     return output;
 }
 
@@ -58,7 +69,8 @@ int main() {
     cout << "Please switch which sort you want to use:\n"
          << "1. Counting Sort\n"
          << "2. Selection Sort\n"
-         << "3. Bubble Sort\n";
+         << "3. Bubble Sort\n"
+         << "4. Insertion Sort\n";
     int s;
     cin >> s;
     vector<int> ans;
@@ -71,6 +83,9 @@ int main() {
         break;
     case 3:
         ans = bubble_sort(vecIn);
+        break;
+    case 4:
+        ans = insertion_sort(vecIn);
         break;
     default:
         cout << "Invalid option. Using Bubble Sort by default.\n";
