@@ -43,7 +43,7 @@ vector<int> bubble_sort(const vector<int>& vec) {
     return output;
 }
 
-vector<int> insetion_sort(const vector<int>& vec) {
+vector<int> insertion_sort(const vector<int>& vec) {
     vector<int> output = vec;
     for (int i = 1; i < output.size(); i++) {
         int key = output[i];
