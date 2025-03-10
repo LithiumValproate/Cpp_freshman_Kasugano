@@ -57,6 +57,29 @@ vector<int> insertion_sort(const vector<int>& vec) {
     return output;
 }
 
+vector<int> quick_sort(vector<int> vec, int l, int r) {
+    if (l < r) {
+        int pivot = l + (r - l) / 2;
+        int i = l, j = r;
+        while (i <= j) {
+            while (vec[i] < vec[pivot])
+                i++;
+            while (vec[j] > vec[pivot])
+                j--;
+            if (i <= j) {
+                swap(vec[i], vec[j]);
+                i++;
+                j--;
+            }
+        }
+        if (l < j)
+            vec = quick_sort(vec, l, j);
+        if (i < r)
+            vec = quick_sort(vec, i, r);
+    }
+    return vec;
+}
+
 int main() {
     cout << "Please enter numbers to sort:\n"
          << "Please ends in any character not belongs to numbers\n";
@@ -70,10 +93,12 @@ int main() {
          << "1. Counting Sort\n"
          << "2. Selection Sort\n"
          << "3. Bubble Sort\n"
-         << "4. Insertion Sort\n";
+         << "4. Insertion Sort\n"
+         << "5. Quick Sort\n";
     int s;
     cin >> s;
     vector<int> ans;
+    int l = 0, r = vecIn.size() - 1;
     switch (s) {
     case 1:
         ans = counting_sort(vecIn);
@@ -86,6 +111,9 @@ int main() {
         break;
     case 4:
         ans = insertion_sort(vecIn);
+        break;
+    case 5:
+        ans = quick_sort(vecIn, l, r);
         break;
     default:
         cout << "Invalid option. Using Bubble Sort by default.\n";
