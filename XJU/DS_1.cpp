@@ -1,8 +1,11 @@
+#include <algorithm>
+#include <cctype>
 #include <iostream>
 #include <string>
 #include <variant>
 using namespace std;
 using us = unsigned short;
+using KeyType = variant<us, string>;
 
 struct Profile {
     us id;
@@ -15,18 +18,16 @@ struct Profile {
     Profile* next;
 };
 
-Profile* find(Profile* head, const variant<us, string>& key) {
-    Profile* tmp = head;
-    if (holds_alternative<us>(key)) {
-        us k = get<us>(key);
-        while (tmp != nullptr && tmp->id != k)
-            tmp = tmp->next;
-    } else {
-        string k = get<string>(key);
-        while (tmp != nullptr && tmp->name != k)
-            tmp = tmp->next;
+auto equalKey = [](const Profile* p, const KeyType& key) -> bool {
+    return holds_alternative<us>(key) ? (p->id == get<us>(key)) : (p->name == get<string>(key));
+};
+
+Profile* find(Profile* head, const KeyType& key) {
+    for (Profile* tmp = head; tmp != nullptr; tmp = tmp->next) {
+        if (equalKey(tmp, key))
+            return tmp;
     }
-    return tmp;
+    return nullptr;
 }
 
 void add(Profile* head, us& n) {
@@ -34,34 +35,33 @@ void add(Profile* head, us& n) {
     while (tmp->next != nullptr)
         tmp = tmp->next;
     Profile* neo = new Profile;
-    cout << "Enter data (Name Sex Year Month Date):\n";
+    cout << "Enter data (Name, Sex, Birthdate(YYYY MM DD)):\n";
     cin >> neo->name >> neo->sex >> neo->year >> neo->month >> neo->date;
     neo->id = ++n;
     neo->age = 2025 - neo->year;
     neo->next = nullptr;
     tmp->next = neo;
+    cout << "Profile added.\n";
 }
 
-void search(Profile* head, const variant<us, string>& key) {
+void search(Profile* head, const KeyType& key) {
     Profile* tmp = find(head, key);
     if (tmp == nullptr) {
         cout << "Not found.\n";
         return;
     }
-    printf("ID: %hu\nName: %s\nSex: %c\nBirthdate: %hu-%hu-%hu\nAge: %hu\n",
+    printf("ID: %hu, Name: %s, Sex: %c, Birthdate: %hu-%hu-%hu, Age: %hu\n",
            tmp->id, tmp->name.c_str(), tmp->sex, tmp->year, tmp->month, tmp->date, tmp->age);
 }
 
-void edit(Profile* head, const variant<us, string>& key) {
+void edit(Profile* head, const KeyType& key) {
     Profile* tmp = find(head, key);
     if (tmp == nullptr) {
         cout << "Not found.\n";
         return;
     }
     cout << "Enter a number corresponding to the type of data to edit\n"
-         << "1. Name\n"
-         << "2. Sex\n"
-         << "3. Birthdate\n";
+         << "1. Name\t2. Sex\t3. Birthdate\n";
     us s;
     cin >> s;
     switch (s) {
@@ -81,7 +81,7 @@ void edit(Profile* head, const variant<us, string>& key) {
     }
     case 3: {
         us newY, newM, newD;
-        cout << "Enter new birthdate (Year Month Date): ";
+        cout << "Enter new birthdate (YYYY MM DD): ";
         cin >> newY >> newM >> newD;
         tmp->year = newY;
         tmp->month = newM;
@@ -93,6 +93,7 @@ void edit(Profile* head, const variant<us, string>& key) {
         cout << "Invalid\n";
         break;
     }
+    cout << "Profile edited.\n";
 }
 
 bool compare(Profile* a, Profile* b, us c, us order) {
@@ -114,10 +115,7 @@ bool compare(Profile* a, Profile* b, us c, us order) {
         result = true;
         break;
     }
-    if (order == 2)
-        return !result;
-    else
-        return result;
+    return (order == 2) ? !result : result;
 }
 
 void swap_data(Profile* a, Profile* b) {
@@ -131,7 +129,7 @@ void swap_data(Profile* a, Profile* b) {
 }
 
 void sort_p(Profile* head, us c, us order) {
-    if (head == nullptr)
+    if (!head)
         return;
     bool swapped;
     do {
@@ -149,27 +147,20 @@ void sort_p(Profile* head, us c, us order) {
 }
 
 void check(Profile* head) {
-    Profile* tmp = head;
-    if (tmp == nullptr) {
+    if (!head) {
         cout << "List is empty.\n";
         return;
     }
-    while (tmp != nullptr) {
+    for (Profile* tmp = head; tmp != nullptr; tmp = tmp->next) {
         printf("ID: %hu, Name: %s, Sex: %c, Birthdate: %hu-%hu-%hu, Age: %hu\n",
                tmp->id, tmp->name.c_str(), tmp->sex, tmp->year, tmp->month, tmp->date, tmp->age);
-        tmp = tmp->next;
     }
 }
 
-void del(Profile*& head, const variant<us, string>& key) {
-    if (head == nullptr)
+void del(Profile*& head, const KeyType& key) {
+    if (!head)
         return;
-    bool matchHead = false;
-    if (holds_alternative<us>(key))
-        matchHead = (head->id == get<us>(key));
-    else
-        matchHead = (head->name == get<string>(key));
-    if (matchHead) {
+    if (equalKey(head, key)) {
         Profile* temp = head;
         head = head->next;
         delete temp;
@@ -177,16 +168,8 @@ void del(Profile*& head, const variant<us, string>& key) {
         return;
     }
     Profile* current = head;
-    while (current->next != nullptr) {
-        bool match = false;
-        if (holds_alternative<us>(key))
-            match = (current->next->id == get<us>(key));
-        else
-            match = (current->next->name == get<string>(key));
-        if (match)
-            break;
+    while (current->next != nullptr && !equalKey(current->next, key))
         current = current->next;
-    }
     if (current->next != nullptr) {
         Profile* temp = current->next;
         current->next = temp->next;
@@ -214,45 +197,23 @@ void select_func(Profile*& head, us& n) {
             add(head, n);
             break;
         case 2: {
-            cout << "Enter a number to select a filter.\n"
-                 << "1. ID\n"
-                 << "2. Name\n";
-            int b;
-            cin >> b;
-            if (b == 1) {
-                us sId;
-                cout << "Enter ID: ";
-                cin >> sId;
-                search(head, sId);
-            } else if (b == 2) {
-                string sName;
-                cout << "Enter Name: ";
-                cin >> sName;
-                search(head, sName);
-            } else {
-                cout << "Invalid\n";
-            }
+            cout << "Enter ID or name to search\n";
+            string input;
+            cin >> input;
+            KeyType sKey = all_of(input.begin(), input.end(), ::isdigit)
+                               ? KeyType(static_cast<us>(stoi(input)))
+                               : KeyType(input);
+            search(head, sKey);
             break;
         }
         case 3: {
-            cout << "Enter a number to select a filter.\n"
-                 << "1. ID\n"
-                 << "2. Name\n";
-            int c;
-            cin >> c;
-            if (c == 1) {
-                us eId;
-                cout << "Enter ID: ";
-                cin >> eId;
-                edit(head, eId);
-            } else if (c == 2) {
-                string eName;
-                cout << "Enter Name: ";
-                cin >> eName;
-                edit(head, eName);
-            } else {
-                cout << "Invalid\n";
-            }
+            cout << "Enter ID or name to edit\n";
+            string input;
+            cin >> input;
+            KeyType eKey = all_of(input.begin(), input.end(), ::isdigit)
+                               ? KeyType(static_cast<us>(stoi(input)))
+                               : KeyType(input);
+            edit(head, eKey);
             break;
         }
         case 4: {
@@ -273,24 +234,13 @@ void select_func(Profile*& head, us& n) {
             check(head);
             break;
         case 6: {
-            cout << "Enter a number to select a filter.\n"
-                 << "1. ID\n"
-                 << "2. Name\n";
-            int f;
-            cin >> f;
-            if (f == 1) {
-                us dId;
-                cout << "Enter ID: ";
-                cin >> dId;
-                del(head, dId);
-            } else if (f == 2) {
-                string dName;
-                cout << "Enter Name: ";
-                cin >> dName;
-                del(head, dName);
-            } else {
-                cout << "Invalid\n";
-            }
+            cout << "Enter ID or name to delete\n";
+            string input;
+            cin >> input;
+            KeyType dKey = all_of(input.begin(), input.end(), ::isdigit)
+                               ? KeyType(static_cast<us>(stoi(input)))
+                               : KeyType(input);
+            del(head, dKey);
             break;
         }
         case 7:
@@ -306,16 +256,16 @@ int main() {
     Profile* head = new Profile;
     us n = 1;
     cout << "Enter data of a new profile.\n"
-         << "Name\tSex\tYear Month Date\n";
+         << "Name, Sex, Birthdate(YYYY MM DD)\n";
     cin >> head->name >> head->sex >> head->year >> head->month >> head->date;
     head->id = n;
     head->age = 2025 - head->year;
     head->next = nullptr;
     select_func(head, n);
     while (head) {
-        Profile* temp = head;
+        Profile* tmp = head;
         head = head->next;
-        delete temp;
+        delete tmp;
     }
     system("pause");
     return 0;
